@@ -21,33 +21,34 @@ export default function Dev8() {
         setDateArray(value)
     }
 
-    function getAPIdata() {
-        setObjectName("")
-        let useDate = `${dateArray[0]}-${(dateArray[1]+1).toLocaleString('en-US', {
-            minimumIntegerDigits: 2,
-            useGrouping: false
-          })}-${dateArray[2].toLocaleString('en-US', {
-            minimumIntegerDigits: 2,
-            useGrouping: false
-          })}`;
-        console.log(useDate)
-        // console.log(`https://api.nasa.gov/neo/rest/v1/feed?start_date=2015-09-07&end_date=2015-09-08&api_key=${import.meta.env.VITE_NASA_KEY}`)
-        axios.get(`https://api.nasa.gov/neo/rest/v1/feed?start_date=${useDate}&end_date=${useDate}&api_key=${process.env.REACT_APP_NASA_KEY}`)
-            .then(response => {
-                console.log(response)
-                setObjectName(response.data.near_earth_objects[`${useDate}`][0].name);
-                setDist(response.data.near_earth_objects[`${useDate}`][0].close_approach_data[0].miss_distance.miles);
-                setDate(response.data.near_earth_objects[`${useDate}`][0].close_approach_data[0].close_approach_date_full);
-            })
-            .catch(e => {
-                setError(e);
-                console.log(`Error: ${e}`);
-            });
 
-    }
 
 
     useEffect(() => {
+        function getAPIdata() {
+            setObjectName("")
+            let useDate = `${dateArray[0]}-${(dateArray[1]+1).toLocaleString('en-US', {
+                minimumIntegerDigits: 2,
+                useGrouping: false
+              })}-${dateArray[2].toLocaleString('en-US', {
+                minimumIntegerDigits: 2,
+                useGrouping: false
+              })}`;
+            console.log(useDate)
+            // console.log(`https://api.nasa.gov/neo/rest/v1/feed?start_date=2015-09-07&end_date=2015-09-08&api_key=${import.meta.env.VITE_NASA_KEY}`)
+            axios.get(`https://api.nasa.gov/neo/rest/v1/feed?start_date=${useDate}&end_date=${useDate}&api_key=${process.env.REACT_APP_NASA_KEY}`)
+                .then(response => {
+                    console.log(response)
+                    setObjectName(response.data.near_earth_objects[`${useDate}`][0].name);
+                    setDist(response.data.near_earth_objects[`${useDate}`][0].close_approach_data[0].miss_distance.miles);
+                    setDate(response.data.near_earth_objects[`${useDate}`][0].close_approach_data[0].close_approach_date_full);
+                })
+                .catch(e => {
+                    setError(e);
+                    console.log(`Error: ${e}`);
+                });
+    
+        }
         getAPIdata()
     }, [dateArray])
 

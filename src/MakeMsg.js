@@ -7,7 +7,7 @@ export default function MakeMsg(props) {
         return (
             <React.Fragment>
                 <h1>Here's your birth asteroid!</h1>
-                <h2>{props.objectName}</h2>
+                <h2>Asteroid {props.objectName}</h2>
                 was
                 <h3>{props.dist}</h3>
                 miles from Earth on

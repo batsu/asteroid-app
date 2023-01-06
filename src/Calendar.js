@@ -16,7 +16,7 @@ export default function Calendar(props) {
     <div className='calendar-div'>
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <StaticDatePicker
-        orientation="landscape"
+        orientation="portrait"
         openTo="day"
         value={value}
         // shouldDisableDate={false}

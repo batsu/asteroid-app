@@ -1,5 +1,4 @@
 import React, { useState } from "react"
-import Todo from "./Todo"
 import NewTask from "./NewTask"
 import List from "./List"
 

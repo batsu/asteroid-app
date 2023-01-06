@@ -1,5 +1,11 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import MakeMsg from "./MakeMsg"
+import Calendar from "./Calendar"
+import dayjs from 'dayjs';
+
+var toArray = require('dayjs/plugin/toArray')
+dayjs.extend(toArray)
 
 
 
@@ -9,51 +15,50 @@ export default function Dev8() {
     const [dist, setDist] = useState("")
     const [error, setError] = useState("")
     const [date, setDate] = useState("")
+    const [dateArray, setDateArray] = useState(dayjs('2022-04-07').toArray())
 
-    const getAPIdata = () => {
+    function handleCalChange(value) {
+        setDateArray(value)
+    }
+
+    function getAPIdata() {
+        setObjectName("")
+        let useDate = `${dateArray[0]}-${(dateArray[1]+1).toLocaleString('en-US', {
+            minimumIntegerDigits: 2,
+            useGrouping: false
+          })}-${dateArray[2].toLocaleString('en-US', {
+            minimumIntegerDigits: 2,
+            useGrouping: false
+          })}`;
+        console.log(useDate)
         // console.log(`https://api.nasa.gov/neo/rest/v1/feed?start_date=2015-09-07&end_date=2015-09-08&api_key=${import.meta.env.VITE_NASA_KEY}`)
-        axios.get(`https://api.nasa.gov/neo/rest/v1/feed?start_date=2015-09-07&end_date=2015-09-08&api_key=${process.env.REACT_APP_NASA_KEY}`)
+        axios.get(`https://api.nasa.gov/neo/rest/v1/feed?start_date=${useDate}&end_date=${useDate}&api_key=${process.env.REACT_APP_NASA_KEY}`)
             .then(response => {
-                // console.log(response)
-                setObjectName(response.data.near_earth_objects["2015-09-08"][0].name)
-                setDist(response.data.near_earth_objects["2015-09-08"][0].close_approach_data[0].miss_distance.miles)
-                setDate(response.data.near_earth_objects["2015-09-08"][0].close_approach_data[0].close_approach_date_full)
+                console.log(response)
+                setObjectName(response.data.near_earth_objects[`${useDate}`][0].name);
+                setDist(response.data.near_earth_objects[`${useDate}`][0].close_approach_data[0].miss_distance.miles);
+                setDate(response.data.near_earth_objects[`${useDate}`][0].close_approach_data[0].close_approach_date_full);
             })
             .catch(e => {
-                setError(e)
-                console.log(`Error: ${e}`)
-            })
+                setError(e);
+                console.log(`Error: ${e}`);
+            });
 
     }
 
-    function DisplayAPI() {
-        if (error !== "") return <h1>Problem with API!</h1>
-        if (objectName === "") return <h1>Loading...</h1>
-        else {
-            return (
-                <React.Fragment>
-                    <h2>{objectName}</h2>
-                    was
-                    <h3>{dist}</h3>
-                    miles from Earth on
-                    <h4>{date}</h4>
-
-
-                </React.Fragment>
-            )
-        }
-
-    }
 
     useEffect(() => {
         getAPIdata()
-    }, [])
+    }, [dateArray])
 
 
 
     return (
         <div className="Div8">
-            <DisplayAPI />
+            <h1>What is your birth asteroid?</h1>
+            <Calendar handleCalChange={handleCalChange} />
+            <h2>{dateArray}</h2>
+            <MakeMsg objectName={objectName} dist={dist} error={error} date={date} />
         </div>
     )
 }
